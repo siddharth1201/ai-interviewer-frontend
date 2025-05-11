@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: 37 99 235;     /* blue-600 */
+    --color-primary-light: 96 165 250; /* blue-400 */
+    --color-secondary: 20 184 166;  /* teal-500 */
+    --color-accent: 249 115 22;     /* orange-500 */
+    --color-success: 16 185 129;    /* green-500 */
+    --color-warning: 234 179 8;     /* yellow-500 */
+    --color-error: 239 68 68;       /* red-500 */
+    --color-background: 248 250 252; /* slate-50 */
+  }
+
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 
+                 Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    @apply bg-slate-50 text-slate-900 antialiased;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-md font-medium transition-all duration-200 
+           focus:outline-none focus:ring-2 focus:ring-opacity-50;
+  }
+
+  .btn-primary {
+    @apply bg-blue-600 text-white hover:bg-blue-700 
+           focus:ring-blue-500;
+  }
+
+  .btn-secondary {
+    @apply bg-slate-200 text-slate-800 hover:bg-slate-300 
+           focus:ring-slate-400;
+  }
+
+  .btn-danger {
+    @apply bg-red-500 text-white hover:bg-red-600 
+           focus:ring-red-400;
+  }
+
+  .input-field {
+    @apply w-full px-3 py-2 border border-slate-300 rounded-md 
+           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+           transition duration-200;
+  }
+
+  .card {
+    @apply bg-white rounded-lg shadow-md p-6 border border-slate-200;
+  }
+}

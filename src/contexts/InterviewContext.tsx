@@ -93,6 +93,7 @@ interface InterviewState {
   websocket: WebSocket | null;
   error: string | null;
   volume: number;
+  isTurnComplete: boolean;
 }
 
 interface InterviewContextType extends InterviewState {
@@ -124,6 +125,7 @@ export function InterviewProvider({ children }: InterviewProviderProps) {
     websocket: null,
     error: null,
     volume: 1.0,
+    isTurnComplete: false,
   });
 
   // Remove audioElement and its related refs
@@ -259,6 +261,8 @@ export function InterviewProvider({ children }: InterviewProviderProps) {
     };
   }, []);
 
+  
+
   // Update volume effect
   useEffect(() => {
     if (audioContext.current && sourceNode.current) {
@@ -332,6 +336,7 @@ export function InterviewProvider({ children }: InterviewProviderProps) {
 
       ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
+        console.log('Received websocket message:', data);
         
         if (data.error) {
           setState(prev => ({ 
@@ -341,29 +346,26 @@ export function InterviewProvider({ children }: InterviewProviderProps) {
             isInterviewActive: false
           }));
         } else if (data.success === 'Interview prepared successfully') {
+          console.log('Interview preparation successful');
           setState(prev => ({ 
             ...prev, 
-            isInterviewReady: true, 
+            isInterviewReady: true,
             isLoading: false,
             isInterviewActive: true,
-            isSystemSpeaking: true,
-            isMicActive: false
+            isMicActive: true, // Start with mic active for first turn
+            isTurnComplete: false,
+            error: null
           }));
-        } else if (data.status === 'ready') {
-          console.log('Interview system is ready');
         } else if (data.turn_complete) {
+          console.log('Server turn complete - activating microphone');
           setState(prev => ({ 
             ...prev, 
             isSystemSpeaking: false, 
-            isMicActive: true 
-          }));
-        } else if (data.system_speaking) {
-          setState(prev => ({ 
-            ...prev, 
-            isSystemSpeaking: true, 
-            isMicActive: false 
+            isMicActive: true,
+            isTurnComplete: true
           }));
         } else if (data.audio) {
+          console.log(`Received audio data of length: ${data.audio.length}`);
           // Dispatch custom event with audio data
           window.dispatchEvent(new CustomEvent('playAudio', {
             detail: { audioData: data.audio }  // This matches the base64 string from the server
@@ -372,7 +374,8 @@ export function InterviewProvider({ children }: InterviewProviderProps) {
           setState(prev => ({ 
             ...prev, 
             isSystemSpeaking: true,
-            isMicActive: false
+            isMicActive: false,
+            isTurnComplete: false
           }));
         }
       };

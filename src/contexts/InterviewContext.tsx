@@ -305,7 +305,7 @@ export function InterviewProvider({ children }: InterviewProviderProps) {
       // Upload resume
       const resumeFormData = new FormData();
       resumeFormData.append('file', state.resumeFile);
-      const resumeResponse = await fetch('http://localhost:8000/upload/resume', {
+      const resumeResponse = await fetch(`${import.meta.env.VITE_BASE_URL_API}/upload/resume`, {
         method: 'POST',
         body: resumeFormData,
       });
@@ -317,7 +317,7 @@ export function InterviewProvider({ children }: InterviewProviderProps) {
       // Upload job description
       const jdFormData = new FormData();
       jdFormData.append('file', state.jobDescriptionFile);
-      const jdResponse = await fetch('http://localhost:8000/upload/jd', {
+      const jdResponse = await fetch(`${import.meta.env.VITE_BASE_URL_API}/upload/jd`, {
         method: 'POST',
         body: jdFormData,
       });
@@ -327,7 +327,7 @@ export function InterviewProvider({ children }: InterviewProviderProps) {
       }
 
       // Initialize WebSocket connection
-      const websocketUrl = `ws://localhost:8765?name=${encodeURIComponent(state.candidateName)}&gain=${state.volume}`;
+      const websocketUrl = `${import.meta.env.VITE_BASE_URL_WS}?name=${encodeURIComponent(state.candidateName)}&gain=${state.volume}`;
       const ws = new WebSocket(websocketUrl);
 
       ws.onopen = () => {
